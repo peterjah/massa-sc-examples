@@ -12,8 +12,13 @@
   "devDependencies": {
     "@as-pect/cli": "^6.2.4",
     "json-as": "^0.2.6",
-    "massa-sc-scripts": "^4.0.3",
+    "massa-sc-scripts": "^4.0.3"
+  },
+  "dependencies": {
+    "assemblyscript": "^0.19.3",
     "massa-sc-std": "^4.0.1",
-    "mscl-type": "https://gitpkg.now.sh/massalabs/massa-sc-library/type?main"
+    "mscl-token": "https://gitpkg.now.sh/peterjah/massa-sc-library/token?main",
+    "mscl-type": "https://gitpkg.now.sh/massalabs/massa-sc-library/type?main",
+    "visitor-as": "^0.8.0"
   }
 }
