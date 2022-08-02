@@ -1,27 +1,45 @@
-import { call, print } from "massa-sc-std";
-import { JSON } from "json-as";
-
-@json
-export class SwapArgs {
-    addrA: string = "";
-    tokenA: string = "";
-    amountA: u32 = 0;
-    addrB: string = "";
-    tokenB: string = "";
-    amountB: u32 = 0;
-}
-
-@json
-export class TransferFromArgs {
-    owner: string = "";
-    to: string = "";
-    amount: u32 = 0;
-}
+import { call, Address } from "massa-sc-std";
+import { ByteArray } from "mscl-type";
 
 export function swap(_args: string): string {
-    const args = JSON.parse<SwapArgs>(_args);
-    print("Swapping tokens " + args.tokenA + " and " + args.tokenB);
-    call(args.tokenA, "transferFrom", JSON.stringify<TransferFromArgs>({owner: args.addrA, to: args.addrB, amount: args.amountA}), 0);
-    call(args.tokenB, "transferFrom", JSON.stringify<TransferFromArgs>({owner: args.addrB, to: args.addrA, amount: args.amountB}), 0);
-    return "1";
+  const addrA = new Address();
+  let offset = addrA.fromStringSegment(_args);
+  const tokenA = new Address();
+  offset = addrA.fromStringSegment(_args, offset);
+  const amountA = ByteArray.fromByteString(
+    _args.substring(offset, offset + 8)
+  ).toU64();
+  offset += 8;
+
+  const addrB = new Address();
+  offset = addrA.fromStringSegment(_args, offset);
+  const tokenB = new Address();
+  offset = addrA.fromStringSegment(_args, offset);
+  const amountB = ByteArray.fromByteString(
+    _args.substring(offset, offset + 8)
+  ).toU64();
+
+  if (addrA == addrB) {
+    return "0";
+  }
+
+  call(
+    tokenA,
+    "transferFrom",
+    addrA
+      .toStringSegment()
+      .concat(addrB.toStringSegment())
+      .concat(ByteArray.fromU64(amountA).toByteString()),
+    0
+  );
+  call(
+    tokenB,
+    "transferFrom",
+    addrB
+      .toStringSegment()
+      .concat(addrA.toStringSegment())
+      .concat(ByteArray.fromU64(amountB).toByteString()),
+    0
+  );
+  return "1";
 }

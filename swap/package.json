@@ -13,6 +13,7 @@
     "@as-pect/cli": "^6.2.4",
     "json-as": "^0.2.6",
     "massa-sc-scripts": "^4.0.3",
-    "massa-sc-std": "^3.2.2"
+    "massa-sc-std": "^4.0.1",
+    "mscl-type": "https://gitpkg.now.sh/massalabs/massa-sc-library/type?main"
   }
 }
